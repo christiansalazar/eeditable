@@ -39,7 +39,7 @@ class EEditableColumn extends CDataColumn {
 				if(!isset($data[$dpKeyField]))
 					throw new Exception("The provided keyField '$dpKeyField' "
 						."is not defined in your data columns or array indexes");
-				$keyValue = $data[$keyFields];
+				$keyValue = $data[$dpKeyField];
 			}else{
 				$keyValue = $data->primarykey;
 			}
