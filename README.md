@@ -5,11 +5,13 @@ application to make a tag editable by the end user. A Special class is provided
 for CGridView: EEditableColumn, this class enabling your CGridView to make
 an editable column.
 
+![Example][1]
+
 This extension is designed to be used with/without Yii Framework application
 this not limit the usage outside the Yii Framework limits, please refeer
 to the first example below this lines to know how.
 
-##Example 1: In a non-yiiframework:
+##Example 1: In a non-yiiframework application.
 
 	<table id='some'>
 		<tr>
@@ -22,7 +24,7 @@ to the first example below this lines to know how.
 	</table>
 	<script>$('#some').EEditable();</script>
 
-##Example 2: In a CGridView
+##Example 2: In a Yii Framework application: As a CGridView column.
 	
 This jQuery Extension can be used via special column inserted into your
 CGridView, using the attribute: class='EEditableColumn'.
@@ -44,31 +46,26 @@ CGridView, using the attribute: class='EEditableColumn'.
 	));
 	?>
 
-#Handling Values Changed at Server Side
+#At Server Side
 
-This jQuery extension sends a POST to the defined action, having four values, 
-defined as follows:
+This jQuery extension send a POST to the action defined in the tag attribute named: 'editable_action'. When used as a EEditableColumn then this url is provided via 'action' option (example: 'action'=>array('/some/ajaxeditcolumn')). The action send a POST (via ajax) to your server having this keys:
 
 	keyvalue	commonly identifyes the primary key value
 	name		the 'name' attribute value in your column definition
 	old_value	the original value previous to edition
 	new_value	the new value typed by the end user
 
-As return, the ajax call expects from you to return the accepted value.
+As return, the ajax call expects from you to 'echo' the accepted value.
 
-In order to make this thing works provide the action url (as array url) 
-in the column definition 'action'=>array('/some/ajaxeditcolumn'). 
-This will fire changes to the provided url in your controller:
-	
 	public function actionAjaxEditColumn(){
 		$keyvalue	= $_POST["keyvalue"];  	// ie: 'userid123'
-		$name		= $_POST["name"];		// ie: 'firstname'
+		$name		= $_POST["name"];	// ie: 'firstname'
 		$old_value  = $_POST["old_value"];	// ie: 'patricia'
 		$new_value  = $_POST["new_value"];	// ie: '  paTTy '
 
 		// do some stuff here, and return the value to be displayed..
 		$new_value = ucfirst(trim($new_value));
-		echo $new_value;					// Patty
+		echo $new_value;			// Patty
 	}
 
 #Exception Thrown when using CArrayDataProvider, why ?
@@ -80,6 +77,8 @@ is not defined:
 
 How to fix:
 
+Set a value in the 'keyField' attribute, look at the provided example below this lines:
+
 	$yourData = array(array("firstname"=>"jhonn","lastname"=>"doe"), ... );
 	$dp = new CArrayDataProvider($yourData,array(
 		'id'=>'someid',
@@ -87,4 +86,5 @@ How to fix:
 		'pagination'=>array('pageSize'=>10),
 	));
 
-When using this extension on a CActiveDataProvider then this problem doesnt occur.
+When using this extension on a CActiveDataProvider then this problem doesn't occurs unless you set an invalid keyField value already provided by the default implementation.
+[1]:https://raw.githubusercontent.com/christiansalazar/eeditable/master/eeditable.png
