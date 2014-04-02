@@ -33,15 +33,18 @@ class EEditableColumn extends CDataColumn {
 		if(null != $this->editable_type){
 			$options['editable_type'] = $this->editable_type;
 			$options['editable_name'] = $this->name;
-			$dpKeyField = $this->grid->dataProvider->keyField; 
-			if(!$dpKeyField)
-				throw new Exception("Please provide the keyField attribute in "
-					."your Data Provider");
-			if(!isset($data[$dpKeyField]))
-				throw new Exception("The provided keyField '$dpKeyField' "
-					."is not defined in your data columns or array indexes");
+			$keyValue = "0";
+			if(isset($this->grid->dataProvider->keyField)){
+				$dpKeyField = $this->grid->dataProvider->keyField; 
+				if(!isset($data[$dpKeyField]))
+					throw new Exception("The provided keyField '$dpKeyField' "
+						."is not defined in your data columns or array indexes");
+				$keyValue = $data[$keyFields];
+			}else{
+				$keyValue = $data->primarykey;
+			}
 			$options['editable_action'] = CHtml::normalizeUrl($this->action);
-			$options['editable_id'] = $data[$dpKeyField];
+			$options['editable_id'] = $keyValue;
 		}
 		echo CHtml::openTag('td',$options);
 		$this->renderDataCellContent($row,$data);
