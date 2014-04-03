@@ -6,6 +6,7 @@ for CGridView: EEditableColumn, this class enabling your CGridView to make
 an editable column.
 
 ![Example][1]
+![Example][2]
 
 This extension is designed to be used with/without Yii Framework application
 this not limit the usage outside the Yii Framework limits, please refeer
@@ -15,10 +16,22 @@ to the first example below this lines to know how.
 
 	<table id='some'>
 		<tr>
+			<!-- this will select a editbox when clicking over it -->
 			<td editable_type='editbox' 
 				editable_action='some url to send a post via ajax request'
-				editable_id='someUniqueId', editable_name='someColName'>
+				editable_id='someUniqueId', editable_name='someColName1'>
 				value to be edited when clicking over it
+			</td>
+			<!-- this will display a select having the values provided 
+			in the inner select tag -->
+			<td editable_type='select' 
+				editable_action='some url to send a post via ajax request'
+				editable_id='someUniqueId', editable_name='someColName2'>
+					<select style='display:none;' class='editable_options'>
+						<option value='1'>Yes</option>
+						<option value='0'>No</option>
+					</select>
+				No
 			</td>
 		</tr>
 	</table>
@@ -40,6 +53,12 @@ CGridView, using the attribute: class='EEditableColumn'.
 			array('name'=>'firstname'),
 			array('name'=>'example_field',
 				'class'=>'EEditableColumn', 'editable_type'=>'editbox',
+				'action'=>array('/some/ajaxeditcolumn'),
+			),
+			array('name'=>'example_field_2',
+				'class'=>'EEditableColumn', 'editable_type'=>'select',
+				'editable_options'=>
+					array(-1=>'--select--','1'=>'Yes','0'=>'No','3'=>'maybe!'),
 				'action'=>array('/some/ajaxeditcolumn'),
 			),
 		),
@@ -86,5 +105,6 @@ Set a value in the 'keyField' attribute, look at the provided example below this
 		'pagination'=>array('pageSize'=>10),
 	));
 
-When using this extension on a CActiveDataProvider then this problem doesn't occurs unless you set an invalid keyField value already provided by the default implementation.
-[1]:https://raw.githubusercontent.com/christiansalazar/eeditable/master/eeditable.png
+When using this extension on a CActiveDataProvider then this problem doesn't occurs.
+[1]:https://raw.githubusercontent.com/christiansalazar/eeditable/master/eeditable1.png
+[2]:https://raw.githubusercontent.com/christiansalazar/eeditable/master/eeditable2.png

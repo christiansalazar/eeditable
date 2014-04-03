@@ -11,9 +11,10 @@
  * @license FreeBSD {@link http://www.freebsd.org/copyright/freebsd-license.html}
  */
 class EEditableColumn extends CDataColumn {
-	public $editable_type;	// "editbox"
-	public $action;			// the action receptor when receiving changes. 
-							//	array('someaction')
+	public $editable_type;		// "editbox","select" (required array in editable_options)
+	public $editable_options;	// array(1=>'yes',0=>'no')
+	public $action;				// the action receptor when receiving changes. 
+								//	array('someaction')
 
 	public function renderDataCell($row)
 	{
@@ -47,6 +48,12 @@ class EEditableColumn extends CDataColumn {
 			$options['editable_id'] = $keyValue;
 		}
 		echo CHtml::openTag('td',$options);
+			if($this->editable_type=='select'){
+				echo "\n<select class='editable_options' style='display:none;'>\n";
+				foreach($this->editable_options as $value=>$label)
+					echo "\t<option value='$value'>$label</option>\n";
+				echo "</select>\n";
+			}
 		$this->renderDataCellContent($row,$data);
 		echo '</td>';
 	}
