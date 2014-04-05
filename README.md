@@ -106,5 +106,13 @@ Set a value in the 'keyField' attribute, look at the provided example below this
 	));
 
 When using this extension on a CActiveDataProvider then this problem doesn't occurs.
+
+#Implementing CSFR Tokens
+
+Please refeer to this issue to know more about how to implement two little changes for having a CSFR token successfully implemented. (Thanks to: https://github.com/dadinugroho)  https://github.com/christiansalazar/eeditable/issues/4
+
+
 [1]:https://raw.githubusercontent.com/christiansalazar/eeditable/master/eeditable1.png
 [2]:https://raw.githubusercontent.com/christiansalazar/eeditable/master/eeditable2.png
+
+
