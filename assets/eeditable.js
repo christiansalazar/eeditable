@@ -11,11 +11,26 @@
  * @license FreeBSD {@link http://www.freebsd.org/copyright/freebsd-license.html}
  */
 $.fn.EEditable = function(){
+	var on_create = function(input, tag){
+		if(typeof eeditable_callback === 'function')
+			eeditable_callback('on_create', input, tag);
+	}
+	var on_ajax = function(input, tag){
+		if(typeof eeditable_callback === 'function'){
+			return eeditable_callback('on_ajax', input, tag);
+		}else
+		return true;
+	}
 	var _getKeyName = function(tag){
 		return tag.attr('editable_name');
 	}
 	var _getKeyValue = function(tag){
 		return tag.attr('editable_id');
+	}
+	var _getInputElement = function(tag){
+		if('editbox'==tag.attr('editable_type'))  return tag.find('input');
+		if('select'==tag.attr('editable_type'))  return tag.find('select');
+		return null;
 	}
 	var _reset = function(tag){
 		if(!tag) return;
@@ -40,6 +55,7 @@ $.fn.EEditable = function(){
 		}
 		if((new_value != null) && (new_value != saved_value)){
 			tag.find('input').attr('disabled','disabled');
+			if(true==on_ajax(_getInputElement(tag),tag)){
 			$.ajax({
 				url: tag.attr('editable_action'), type: 'post',
 				data: { keyvalue: _getKeyValue(tag) , 
@@ -56,6 +72,10 @@ $.fn.EEditable = function(){
 					tag.find('input').attr('disabled',null);
 				}
 			});
+			}else{
+				_reset(tag);
+				tag.find('input').attr('disabled',null);
+			}
 		}else{
 			_reset(tag);
 			tag.find('input').attr('disabled',null);
@@ -63,18 +83,20 @@ $.fn.EEditable = function(){
 	}
 	var _editBox = function(tag){
 		if('edit' == tag.data('eeditablegrid_state')){
-			
+			return null;
 		}else{
 			var value = tag.html();
 			tag.data('eeditablegrid_state','edit');
 			tag.data('eeditablegrid_value',value);
 			tag.html('<input type=\'text\' />');
-			tag.find('input').val(value);
+			var input = tag.find('input');
+			input.val(value);
+			return input;
 		}
 	}
 	var _select = function(tag){
 		if('edit' == tag.data('eeditablegrid_state')){
-			
+			return null;
 		}else{
 			var options=[];
 			tag.find('select.editable_options option').each(
@@ -99,6 +121,7 @@ $.fn.EEditable = function(){
 				_option.attr('value',entry.value);
 				_option.html(entry.label);
 			});
+			return select;
 		}
 	}
 	$(this).each(function(){
@@ -117,8 +140,20 @@ $.fn.EEditable = function(){
 					_accept(_prevtag);
 					_setCurrent(_tag);
 					var _type = _tag.attr('editable_type');
-					if("editbox"==_type) _editBox(_tag);
-					if("select"==_type) _select(_tag);
+					var input_element = null;
+					if("editbox"==_type) input_element = _editBox(_tag);
+					if("select"==_type) input_element = _select(_tag);
+					if(null != input_element){
+						if(_tag.attr('editable_data')){
+							var data = eval(_tag.attr('editable_data'));
+							$.each(data,function(k,v){
+								$.each(v, function(name,value){ 
+									input_element.attr(name,value);
+								})
+							});
+						}
+						on_create(input_element,_tag);
+					}
 				}
 			});
 			if('select' == $(tag).attr('editable_type')){

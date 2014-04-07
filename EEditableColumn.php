@@ -15,6 +15,7 @@ class EEditableColumn extends CDataColumn {
 	public $editable_options;	// array(1=>'yes',0=>'no')
 	public $action;				// the action receptor when receiving changes. 
 								//	array('someaction')
+	public $input_options;		// array('data-mask'=>'000-000', 'class'=>'my')
 
 	public function renderDataCell($row)
 	{
@@ -46,6 +47,9 @@ class EEditableColumn extends CDataColumn {
 			}
 			$options['editable_action'] = CHtml::normalizeUrl($this->action);
 			$options['editable_id'] = $keyValue;
+			if($this->input_options) $options['editable_data'] = 
+				new CJavaScriptExpression("[".CJavaScript::encode(
+					$this->input_options)."]");
 		}
 		echo CHtml::openTag('td',$options);
 			if($this->editable_type=='select'){

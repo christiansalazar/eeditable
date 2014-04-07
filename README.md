@@ -54,6 +54,7 @@ CGridView, using the attribute: class='EEditableColumn'.
 			array('name'=>'example_field',
 				'class'=>'EEditableColumn', 'editable_type'=>'editbox',
 				'action'=>array('/some/ajaxeditcolumn'),
+				// see also: 'How-To Customize the User Input' about more attributes.
 			),
 			array('name'=>'example_field_2',
 				'class'=>'EEditableColumn', 'editable_type'=>'select',
@@ -86,6 +87,41 @@ As return, the ajax call expects from you to 'echo' the accepted value.
 		$new_value = ucfirst(trim($new_value));
 		echo $new_value;			// Patty
 	}
+
+#How-To Customize the User Input
+
+The following item is related to YiiFramework. (For non-yiiframework applications take a look at raw html to see how it works, is very easy).
+
+Two things comes in help with this issue:
+
+a) The attribute 'input_options', is an array declared for each column defining customized values for the input element.
+
+	'input_options'=>array('data-mask'=>'000-000','class'=>'someclass','rel'=>'abc'),
+
+b) An optional callback js function declared in your page having this format, it will be used only if declared:
+
+	<?php
+	Yii::app()->getClientScript()->registerScript("some_script_id","
+		/*
+			called only if declared. hardwired.
+
+		 	event_name	string	'on_create', 'on_ajax'
+			input		object	the jquery wrapped input object
+			tag			object	the jquery wrapped object containing more info
+		 */
+		function eeditable_callback(event_name, input,tag){
+			if('on_create' == event_name) {
+				// example using the jQuery.mask plugin
+				if(undefined != input.attr('data-mask'))
+					input.mask(input.attr('data-mask'));
+			}
+			if('on_ajax' == event_name){
+				
+				return true;
+			}
+		}
+	",CClientScript::POS_HEAD);
+	?>
 
 #Exception Thrown when using CArrayDataProvider, why ?
 
